@@ -155,14 +155,15 @@ if __name__ == '__main__':
     args.split_dir  = str(Path(config["project_dir"]).joinpath("train_split"))
     args.data_dir   = str(Path(config["project_dir"]).joinpath("audio"))
     args.log_dir    = str(Path(config["project_dir"]).joinpath("finetune"))
-
+    # print(args.log_dir) trying to figure out what's going wrong with log_dir (EL)
     # Find device
     device = torch.device("cuda") if torch.cuda.is_available() else "cpu"
     if torch.cuda.is_available(): print('GPU available, use GPU')
     
     best_dict = dict()
     if args.dataset == "msp-improv": total_folds = 7
-    else: total_folds = 6
+    # just changed to 1 fold hoping to not have to restructure without folds (EL)
+    else: total_folds = 2
     # We perform 5 folds (6 folds only on msp-improv data with 6 sessions)
     for fold_idx in range(1, total_folds):
 
@@ -174,7 +175,8 @@ if __name__ == '__main__':
         weights = return_weights(
             args.split_dir, dataset=args.dataset, fold_idx=fold_idx
         )
-    
+        # print(args)
+        # print("tflist", train_file_list)
         # Set train/dev/test dataloader
         train_dataloader = set_finetune_dataloader(
             args, train_file_list, is_train=True
@@ -192,6 +194,8 @@ if __name__ == '__main__':
             args.pretrain_model,
             f'lr{str(args.learning_rate).replace(".", "")}_ep{args.num_epochs}_{args.downstream_model}_conv{args.conv_layers}_hid{args.hidden_size}_{args.pooling}_{args.finetune}'
         )
+        print("LOG_DIR AFTER JOINPATH:", log_dir)
+
         Path.mkdir(log_dir, parents=True, exist_ok=True)
         
         # Set seeds
@@ -317,6 +321,8 @@ if __name__ == '__main__':
     best_dict["std"]["uar"] = np.std(uar_list)
     best_dict["std"]["acc"] = np.std(acc_list)
     
+    # I don't know why this is here twice but I don't think I did it and it has scoping error?
+    # (EL)
     # save best results
     jsonString = json.dumps(best_dict, indent=4)
     jsonFile = open(str(log_dir.joinpath(f'results.json')), "w")

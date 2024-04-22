@@ -1,8 +1,10 @@
 data_dir:
-  crema_d: /media/data/public-data/SER/crema_d/CREMA-D/
+  crema_d: /home/ubuntu/trust-ser/data/CREMA-D/
   iemocap: /media/data/sail-data/iemocap/
   meld: /media/data/public-data/SER/meld/MELD.Raw/
   msp-improv: /media/data/sail-data/MSP-IMPROV/MSP-IMPROV/
   msp-podcast: /media/data/sail-data/MSP-podcast
   ravdess: /media/data/public-data/SER/Ravdess
-project_dir: /media/data/projects/speech-privacy/trust-ser
+  sep-28k: /home/ubuntu/trust-ser/data/CREMA-D/
+project_dir: /home/ubuntu/trust-ser
+

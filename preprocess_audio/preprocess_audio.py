@@ -4,6 +4,8 @@ import torchaudio
 import numpy as np
 import pandas as pd
 import pickle, pdb, re
+import yaml
+import argparse
 
 from tqdm import tqdm
 from pathlib import Path
@@ -38,6 +40,7 @@ if __name__ == '__main__':
 
     # Read split file
     if args.dataset in ["iemocap", "crema_d", "ravdess", "msp-improv"]:
+        # this is where fold matters (EL)
         with open(str(split_path.joinpath(f'{args.dataset}_fold1.json')), "r") as f: split_dict = json.load(f)
     else:
         with open(str(split_path.joinpath(f'{args.dataset}.json')), "r") as f: split_dict = json.load(f)
@@ -48,7 +51,7 @@ if __name__ == '__main__':
         for idx in tqdm(range(len(split_dict[split]))):
             # Read data: speaker_id, path
             data = split_dict[split][idx]
-            speaker_id, file_path = data[1], data[3]
+            file_name, file_path = data[0], data[1]
 
             # Read wavforms
             waveform, sample_rate = torchaudio.load(str(file_path))
@@ -81,6 +84,6 @@ if __name__ == '__main__':
 
         # Logging the stats for train/dev/test
         logging.info(f'-------------------------------------------------------')
-        logging.info(f'Preprocess audio for {dataset} dataset')
+        logging.info(f'Preprocess audio for {args.dataset} dataset')
         for split in ['train', 'dev', 'test']: logging.info(f'Split {split}: Number of files {len(split_dict[split])}')
         logging.info(f'-------------------------------------------------------')
